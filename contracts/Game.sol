@@ -32,7 +32,7 @@ contract Game is VRFConsumerBase, Ownable {
     function beginGame(uint8 _maxParticipant, uint256 _entryPayment) public onlyOwner {
         require(!gameActivated, "A Game is in progress");
         // empty the participants array
-        delete players;
+        delete participants;
         // set the max participant for this game
         maxParticipant = _maxParticipant;
         // set the game activation to true
