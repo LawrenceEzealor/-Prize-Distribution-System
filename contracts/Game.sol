@@ -38,7 +38,7 @@ contract Game is VRFConsumerBase, Ownable {
         // set the game activation to true
         gameActivated = true;
         // setup the entryPayment for the game
-        entryFee = _entryFee;
+        entryPayment = _entryPayment;
         gameId += 1;
         emit GameStarted(gameId, maxParticipant, entryPayment);
     }
