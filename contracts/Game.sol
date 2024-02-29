@@ -2,19 +2,22 @@
 pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
+import "@chainlink/contracts/src/v0.8/vrf/VRFConsumerBaseV2.sol";
 
 
-contract Game is VRFConsumerBase, Ownable {
+contract Game is VRFConsumerBaseV2, Ownable {
 
     address public owner;
     uint public fee;
     bytes32 public keyHash;
     bool public gameActivated;
-    uint8 public maxParticipant;
+    uint8 public maxParticipants;
     uint256 entryPayment;
     uint256 public gameId;
     
+    event GameStarted(uint256 indexed gameId, uint8 indexed maxParticipant, uint256 entryPayment);
+    event PlayerJoined(uint256 indexed gameId, address participant);
+    event GameEnded(uint256 indexed gameId, address indexed winner,bytes32 requestId);
 
     //this arrays houses the lists of the participants
     //payable is for  addresses that can receive any form of payment
@@ -22,7 +25,7 @@ contract Game is VRFConsumerBase, Ownable {
 
      constructor(address vrfCoordinator, address linkToken,
     bytes32 vrfKeyHash, uint256 vrfFee)
-    VRFConsumerBase(vrfCoordinator, linkToken) {
+    VRFConsumerBaseV2(vrfCoordinator, linkToken) {
         keyHash = vrfKeyHash;
         fee = vrfFee;
         gameActivated = false;
@@ -34,13 +37,13 @@ contract Game is VRFConsumerBase, Ownable {
         // empty the participants array
         delete participants;
         // set the max participant for this game
-        maxParticipant = _maxParticipant;
+        maxParticipants = _maxParticipant;
         // set the game activation to true
         gameActivated = true;
         // setup the entryPayment for the game
         entryPayment = _entryPayment;
         gameId += 1;
-        emit GameStarted(gameId, maxParticipant, entryPayment);
+        emit GameStarted(gameId, maxParticipants, entryPayment);
     }
 
     function participateInGame() public payable {
@@ -82,7 +85,7 @@ contract Game is VRFConsumerBase, Ownable {
         // Make a request to the VRF coordinator.
         // requestRandomness is a function within the VRFConsumerBase
         // it starts the process of randomness generation
-        return requestRandomness(keyHash, fee);
+        return requestRandomnes(keyHash, fee);
     }
 
      // Function to receive Ether. msg.data must be empty
