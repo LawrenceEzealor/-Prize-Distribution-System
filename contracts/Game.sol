@@ -49,7 +49,7 @@ contract Game is VRFConsumerBase, Ownable {
         // Check if the value sent by the participant matches the entryPayment
         require(msg.value == entryPayment, "Value sent is not equal to entryPayment");
         // Check if there is still some space left in the game to add another participant
-        require(participant.length < maxParticipant, "participants limit reached");
+        require(participants.length < maxParticipants, "participants limit reached");
         // add the sender to the participants list
         participants.push(msg.sender);
         emit PlayerJoined(gameId, msg.sender);
